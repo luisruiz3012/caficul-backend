@@ -24,7 +24,7 @@ class ProductController {
     
     const image = files.productImage;
     const mainPath = path.dirname(require.main.filename)
-    const uploadPath = `${process.env.SERVER_URI}/public/images/` + files.productImage.name;
+    const uploadPath = path.join(__dirname, '../../public/images/') + files.productImage.name;
     
 
     image.mv(uploadPath, function (err) {
