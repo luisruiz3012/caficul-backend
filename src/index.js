@@ -22,4 +22,4 @@ require('./database')
 useRouter(app);
 
 
-app.listen(PORT, () => console.log('Listen on http://localhost:' + PORT));
+app.listen(PORT, () => console.log('Server is running!'));

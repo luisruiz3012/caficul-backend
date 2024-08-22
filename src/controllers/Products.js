@@ -24,7 +24,7 @@ class ProductController {
     
     const image = files.productImage;
     const mainPath = path.dirname(require.main.filename)
-    const uploadPath = path.join(__dirname, '../../public/images/') + files.productImage.name;
+    const uploadPath = `${process.env.SERVER_URI}/api/products/public/images/` + files.productImage.name;
     
 
     image.mv(uploadPath, function (err) {
@@ -39,7 +39,7 @@ class ProductController {
       price,
       token,
       wallet,
-      image: "http://192.168.1.13:4000/images/" + files.productImage.name,
+      image: `${process.env.SERVER_URI}/images/` + files.productImage.name,
     });
 
     try {
