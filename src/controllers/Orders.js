@@ -1,4 +1,6 @@
+const jwt = require('jsonwebtoken');
 const Order = require('../models/Order');
+const jwtGenerator = require('../utils/jwtGenerator');
 
 class OrderController {
   async getAll(req, res) {
@@ -12,8 +14,29 @@ class OrderController {
   }
 
   async getAllByWallet(req, res) {
-    const {wallet} = req.query;
-    const orders = await Order.find({'buyerWallet': `${wallet}`}).populate('products').exec();
+    const authorization = req.get('Authorization');
+
+    let token = '';
+
+    if (authorization.toString().toLowerCase().startsWith('bearer')) {
+      token = authorization.split(' ')[1];
+    }
+
+    let decodedToken = {};
+
+    try {
+      decodedToken = jwt.verify(token, process.env.PRIVATE_KEY);
+    } catch (e) {
+      if (e) {
+        return res.status(401).json({ error: 'Token missing or invalid' });
+      }
+    }
+
+    if (!token || !decodedToken.wallet) {
+      return res.status(401).json({ error: 'Token missing or invalid' });
+    }
+
+    const orders = await Order.find({'buyerWallet': `${decodedToken.wallet}`}).populate('products').exec();
     
     if (!orders) {
       return res.status(404).json({ error: 'Not Found' });

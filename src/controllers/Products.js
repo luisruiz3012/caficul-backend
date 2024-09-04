@@ -9,8 +9,13 @@ class ProductController {
 
   async getProduct(req, res) {
     const id = req.params.id;
-    
+    const product = await Product.find(id);
 
+    if (!product) {
+      return res.status(404).json({ error: 'Product not found' });
+    }
+
+    return res.json(product);
   }
 
   async createProduct(req, res) {
